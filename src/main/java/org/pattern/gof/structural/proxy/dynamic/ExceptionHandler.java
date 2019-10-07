@@ -9,8 +9,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.pattern.gof.structural.proxy.dynamic.http.Status.NOT_FOUND;
-import static org.pattern.gof.structural.proxy.dynamic.http.Status.OK;
+import static org.pattern.gof.structural.proxy.dynamic.http.Status.*;
 
 public class ExceptionHandler implements InvocationHandler {
 
@@ -18,6 +17,8 @@ public class ExceptionHandler implements InvocationHandler {
 
     public ExceptionHandler() {
         exceptionToStatus.put(EntityNotFoundRuntimeException.class,NOT_FOUND);
+        exceptionToStatus.put(NullPointerException.class,SERVER_ERROR);
+
     }
 
     @Override
@@ -26,8 +27,8 @@ public class ExceptionHandler implements InvocationHandler {
             Object invoke = method.invoke(proxy, args);
             return new Response(OK, invoke.toString());
         } catch (Exception e) {
-            Class<? extends Exception> clazz = e.getClass();
-            System.out.println(clazz);
+            Throwable cause = e.getCause();
+            Class<? extends Throwable> clazz = cause.getClass();
             Status status = exceptionToStatus.get(clazz);
             return new Response(status, "");
         }

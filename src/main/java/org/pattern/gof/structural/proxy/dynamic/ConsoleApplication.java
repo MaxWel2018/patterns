@@ -19,8 +19,11 @@ public class ConsoleApplication {
         Method method = clazz.getMethod("findById", Long.class);
 
 
-        Response response =
-                exceptionHandler.invoke(userService, method, new Object[]{2L});
+        Response response = exceptionHandler.invoke(userService, method, new Object[]{1L});
+        Response responseDontFoundUser = exceptionHandler.invoke(userService, method, new Object[]{2L});
+        Response responseWithNull = exceptionHandler.invoke(userService, method, new Object[]{null});
         System.out.println(response);
+        System.out.println(responseDontFoundUser);
+        System.out.println(responseWithNull);
     }
 }
